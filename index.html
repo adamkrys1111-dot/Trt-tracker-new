@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRT Tracker</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+h1 { text-align: center; color: #c00; }
+.container { max-width: 400px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+label { display: block; margin-top: 10px; }
+input, select, button { width: 100%; padding: 8px; margin-top: 5px; }
+.history { margin-top: 20px; }
+.entry { padding: 5px; border-bottom: 1px solid #ddd; }
+</style>
+</head>
+<body>
+<h1>TRT Tracker</h1>
+<div class="container">
+    <label for="date">Injection Date:</label>
+    <input type="date" id="date">
+    <label for="dose">Dose (mg):</label>
+    <input type="number" id="dose" placeholder="Enter dose">
+    <label for="notes">Notes:</label>
+    <input type="text" id="notes" placeholder="Optional notes">
+    <button onclick="saveEntry()">Save</button>
+
+    <div class="history" id="history"></div>
+</div>
+
+<script>
+function saveEntry(){
+    const date = document.getElementById('date').value;
+    const dose = document.getElementById('dose').value;
+    const notes = document.getElementById('notes').value;
+    if(!date || !dose){ alert('Please enter date and dose'); return; }
+    const entry = {date, dose, notes};
+    let data = JSON.parse(localStorage.getItem('trtData') || '[]');
+    data.unshift(entry);
+    localStorage.setItem('trtData', JSON.stringify(data));
+    renderHistory();
+}
+
+function renderHistory(){
+    const historyDiv = document.getElementById('history');
+    let data = JSON.parse(localStorage.getItem('trtData') || '[]');
+    historyDiv.innerHTML = '<h3>History</h3>';
+    data.forEach(e => {
+        historyDiv.innerHTML += `<div class="entry"><strong>${e.date}</strong>: ${e.dose} mg ${e.notes ? '- ' + e.notes : ''}</div>`;
+    });
+}
+
+renderHistory();
+</script>
+</body>
+</html>
